@@ -10,30 +10,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Form submit handler
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+ document.querySelector("form").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-    const name = document.querySelector("#name").value.trim();
-    const email = document.querySelector("#email").value.trim();
-    const message = document.querySelector("#message").value.trim();
+  const form = e.target;
+  const data = new FormData(form);
+  const action = form.action;
 
-    try {
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
-      });
+  try {
+    const response = await fetch(action, {
+      method: "POST",
+      body: data,
+      headers: { Accept: "application/json" }
+    });
 
-      const data = await response.json();
-      if (response.ok) {
-        alert("Message sent successfully!");
-        form.reset();
-      } else {
-        alert(data.error || "Something went wrong.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Failed to send message.");
+    if (response.ok) {
+      alert("Thank you! Your message has been sent.");
+      form.reset();
+    } else {
+      alert("Oops! There was a problem submitting your form.");
     }
-  });
+  } catch (error) {
+    alert("Something went wrong. Try again later.");
+  }
+});
 });
